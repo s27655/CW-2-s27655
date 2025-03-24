@@ -1,5 +1,4 @@
-﻿// See https://aka.ms/new-console-template for more information
-
+﻿
 public interface IHazardNotifier
 {
     void NotifyHazard(string serialNumber, string message);
@@ -12,12 +11,13 @@ public abstract class Container
         { "L", 1 },
         { "G", 1 }
     };
+
     public string SerialNumber { get; private set; }
-    public double CargoWeight { get; protected set; } // w kg
-    public double Height { get; private set; } // w cm
-    public double OwnWeight { get; private set; } // w kg
-    public double Depth { get; private set; } // w cm
-    public double MaxCapacity { get; private set; } // w kg
+    public double CargoWeight { get; protected set; }
+    public double Height { get; private set; }
+    public double OwnWeight { get; private set; }
+    public double Depth { get; private set; }
+    public double MaxCapacity { get; private set; }
     public Container(string containerType, double height, double ownWeight, double depth, double maxCapacity)
     {
         SerialNumber = $"KON-{containerType}-{serialNumberCounter[containerType]++}";
@@ -63,7 +63,7 @@ public class OverfillException : Exception
 public class RefrigeratorContainer: Container
 {
     public string Type { get; private set; }
-    public double Temperature { get; private set; } // w stopniach Celsius
+    public double Temperature { get; private set; }
     
     public RefrigeratorContainer(double height, double ownWeight, double depth
         , double maxCapacity,string type, double temperature) 
@@ -118,11 +118,11 @@ public class LiquidContainer : Container, IHazardNotifier
 
         if (IsHazardous)
         {
-            maxAllowedWeight = MaxCapacity * 0.5; // 50% pojemności dla niebezpiecznych ładunków
+            maxAllowedWeight = MaxCapacity * 0.5;
         }
         else
         {
-            maxAllowedWeight = MaxCapacity * 0.9; // 90% pojemności dla zwykłych ładunków
+            maxAllowedWeight = MaxCapacity * 0.9;
         }
 
         if (cargoWeight > maxAllowedWeight)
@@ -182,9 +182,9 @@ public class GasContainer : Container, IHazardNotifier
 public class Ship
 {
     public string Name { get; private set; }
-    public double MaxSpeed { get; private set; } // w km/h
+    public double MaxSpeed { get; private set; }
     public int MaxContainerCount { get; private set; } 
-    public double MaxContainerWeight { get; private set; } // w kg
+    public double MaxContainerWeight { get; private set; }
     public List<Container> Containers { get; private set; }
     
     public Ship(string name, double maxSpeed, int maxContainerCount, double maxContainerWeight)
@@ -212,7 +212,7 @@ public class Ship
             return false;
         }
     
-        currentWeight += newWeight; // Ensure proper addition of the new container's weight
+        currentWeight += newWeight;
         Containers.Add(container);
         Console.WriteLine($"Kontener {container.SerialNumber} został załadowany na statek");
         return true;
@@ -313,8 +313,6 @@ public class ContainerManagementSystem
             Console.WriteLine(container.getInfo());
             return;
         }
-        
-        // Szukaj na statkach
         foreach (var ship in ships)
         {
             container = ship.Containers.Find(c => c.SerialNumber == serialNumber);
